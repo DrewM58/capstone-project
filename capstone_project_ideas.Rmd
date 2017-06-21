@@ -1,0 +1,50 @@
+---
+title: "Capstone Project Ideas"
+author: "Drew Matheson"
+date: "6/21/2017"
+output: html_document
+---
+
+**Idea 1: Can we predict student achievement in mathematics after four years of school using assessment results from the end of their first year?**
+
+The datasets used in this project come from 2 different assessment tools used in New Zealand primary schools.
+
+The first is the JAM assessment tool which is used to assess children in mathematics in the first two years of school (Year 1 and Year 2). The JAM tool assess students in 11 aspects (modules) of mathematical knowledge and strategies. We will use the JAM results from the end of Year 1. 
+
+The second assessment is an overall teacher judgement (OTJ) of student progress and achievement up to a particular point in time, made using the National Standards. National Standards are a national benchmark for student progress. Teachers use a range of evidence of student achievement to judge whether a student is 'At', 'Below', or 'Above' the expected National Standard. These assessments are made twice yearly throughout primary education (Years 1 - 8). For this project we will use the mathematics National Standards OTJ from the end of Year 4.
+
+Other categorical data that could be included are student gender and student ethnicity. 
+
+Can we use achievement data from the JAM assessment after 1 year at school to predict if a student will achieve 'At', 'Below', or 'Above' the expected mathematics National Standard after 4 years at school?
+
+The purpose of this project is to idenitfy key early warning signs for students at risk of not achieving the National Standard at the end of Year 4, and therefore taking action to support their progress and learning so that they may have the best chance of achieving 'At' the National Standard.  
+
+All data in this project will come from one school- approximately 150 students who have been assessed at both time 1 and time 2. All data will be anonymized. 
+
+
+**Idea 2: Can we predict student achievement in reading after four years of school using assessment results from after 6 months of schooling?**
+
+The datasets used in this project come from 2 different assessment tools used in New Zealand primary schools.
+
+After being at school for 6 months all students in New Zealand primary schools are assessed on basic literacy skills. Alphabet knowledge (both letter recognition and letter sounds knowledge) and basic word recognition are assessed. 
+
+The second assessment is an overall teacher judgement (OTJ) of student progress and achievement up to a particular point in time made using the National Standards. National Standards are a national benchmark for student progress. Teachers use a range of evidence of student achievement to judge whether a student is 'At', 'Below', or 'Above' the expected National Standard. These assessments are made twice yearly throughout primary education (Years 1 - 8). For this project we will use the reading National Standards OTJ from the end of Year 4.
+
+Other categorical data that could be included are student gender and student ethnicity. 
+
+Can we use alphabet knowledge and word recognition data from the 6 month assessment to predict if a student will achieve 'At', 'Below', or 'Above' the expected reading National Standard after 4 years at school?
+
+The purpose of this project is to idenitfy key early warning signs for students at risk of not achieving the National Standard at the end of Year 4, and therefore taking action to support their progress and learning so that they may have the best chance of achieving 'At' the National Standard.  
+
+All data in this project will come from one school- approximately 150 students who have been assessed at both time 1 and time 2. All data will be anonymized. 
+
+**Idea 3: Does the time of year at which a child starts school in New Zealand affect their chances of achieving at the expected National Standard?**
+
+In New Zealand it is normal for children to start their primary school education on the day of (or very close to) their 5th birthday. The New Zealand school year begins in early February and ends in mid-December. 
+
+If a child starts their schooling in February or March they are considered 'Year 1' ('Year' is an equivilent term for 'Grade') and the following year they will be in Year 2. If a child starts their schooling in April-December for the remainder of that school year they are considered 'Year 0' and they begin their 'Year 1' the following school year. This means that in some cases there may be a group of Year 1 children where some of them have been at school for up to 8 months longer than their classmates. In the first three years of school children are assessed on the anniversary of their starting date. However, after four years of school all children are assessed at the same time, at the middle and end of the school year. 
+
+Does the time of year at which a child starts school in New Zealand affect their chances of achieving at the expected National Standard after four years? If so, what action should we recommend?
+
+All data in this project will come from one school. All data will be anonymized. 
+
