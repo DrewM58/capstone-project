@@ -27,7 +27,7 @@ New Zealand school teachers and leaders strive to provide an educational experie
 The assessment and achievement data used in this analysis is already being collected by teachers and schools. If we are able to use this data to identify students that are at risk of achieving 'Below' the National Standard then teachers will be able to action additional support and targeted teaching to ensure these students are more likely to attain the expected National Standard. 
 
 
-**Data **
+**Data**
 
 All data in this project will come from one school with a roll size of 485 students. There is data for approximately 150 students who have been assessed at both time 1 (end of 1 year at school) and time 2 (end of Year 4). All data will be anonymized.
 
