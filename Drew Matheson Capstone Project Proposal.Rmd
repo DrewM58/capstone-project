@@ -1,0 +1,54 @@
+---
+title: "Capstone Project Proposal"
+author: "Drew Matheson"
+date: "6/22/2017"
+output: html_document
+---
+
+**Can we predict student achievement in mathematics after four years of school using assessment results from the end of their first year?**
+
+**The problem**
+
+In New Zealand, National Standards are a national benchmark for student progress throughout the primary school years. The standards set clear expectations that students need to meet in reading, writing, and mathematics in the first eight years at school. At the end of each year of schooling teachers use a range of student achievement evidence to judge whether a student is 'At', 'Below', or 'Above' the expected National Standard. 
+ 
+According to Ministry of Education data from 2015, 84.5% of students after one year at school are achieving 'At' or 'Above' the National Standard and this drops to 77.3% of students at the end of Year 4 [(Ministry of Education)] (http://www.educationcounts.govt.nz/statistics/schooling/national-standards/National_Standards).
+
+Is it possible that some of the students who are judged as being 'Below' the expected National Standard after 4 years could have been 'At' if they had been identified after 1 year and had some intervention put in place to support or accelerate their progress?
+
+The purpose of this analysis is to idenitfy key early warning signs for students at risk of not achieving the National Standard at the end of Year 4, and therefore taking action to support their progress and learning so that they may have the best chance of achieving 'At' the National Standard.
+
+
+**Client**
+
+New Zealand school teachers and leaders are the intended client. 
+
+New Zealand school teachers and leaders strive to provide an educational experience that caters for all students and supports them all to achieve educational success. In this case 'educational success' is measured by achieving 'At' or 'Above' the expected National Standard. 
+
+The assessment and achievement data used in this analysis is already being collected by teachers and schools. If we are able to use this data to identify students that are at risk of achieving 'Below' the National Standard then teachers will be able to action additional support and targeted teaching to ensure these students are more likely to attain the expected National Standard. 
+
+
+**Data **
+
+All data in this project will come from one school with a roll size of 485 students. There is data for approximately 150 students who have been assessed at both time 1 (end of 1 year at school) and time 2 (end of Year 4). All data will be anonymized.
+
+The data used in this project come from 2 different assessment tools used in New Zealand primary schools.
+
+The first is the JAM assessment tool which is used to assess children in mathematics in the first two years of school (Year 1 and Year 2). The JAM tool assess students in 11 aspects (modules) of mathematical knowledge and strategies. For this analysis we will use the first 9 modules which are the number strategies and number knowledge aspects. We will use the JAM results from the end of one year at school.
+
+The second assessment is an overall teacher judgement (OTJ) of student progress and achievement up to a particular point in time, made using the National Standards. National Standards are a national benchmark for student progress. Teachers use a range of evidence of student achievement to judge whether a student is 'At', 'Below', or 'Above' the expected National Standard. For this analysis we will use the mathematics National Standards OTJ from the end of Year 4.
+
+Other categorical data included are student gender and ethnicity.
+
+
+**Approach to solving this problem**
+
+The JAM assessment from the end of 1 year at school marks a student at a stage (from Stage 0 - Stage 5) for each of the 9 modules in the assessment. 
+
+The National Standard judgement from the End of Year 4 will mark a student as either 'Below', 'At', or 'Above'. 
+
+An appropriate regression model will be applied to see how we might predict the National Standard judgement for a student at the End of Year 4 using the JAM assessment results from the end of 1 year at school. 
+
+
+**Deliverables**
+
+A full report detailing the process undertaken to complete this analysis will be uploaded to GitHub with R code included.  
