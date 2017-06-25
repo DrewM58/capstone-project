@@ -35,7 +35,7 @@ The data used in this project come from 2 different assessment tools used in New
 
 The first is the JAM assessment tool which is used to assess children in mathematics in the first two years of school (Year 1 and Year 2). The JAM tool assess students in 11 aspects (modules) of mathematical knowledge and strategies. For this analysis we will use the first 9 modules which are the number strategies and number knowledge aspects. We will use the JAM results from the end of one year at school.
 
-The second assessment is an overall teacher judgement (OTJ) of student progress and achievement up to a particular point in time, made using the National Standards. National Standards are a national benchmark for student progress. Teachers use a range of evidence of student achievement to judge whether a student is 'At', 'Below', or 'Above' the expected National Standard. For this analysis we will use the mathematics National Standards OTJ from the end of Year 4.
+The second assessment is an overall teacher judgement (OTJ) of student progress and achievement up to a particular point in time, made using the National Standards. For this analysis we will use the mathematics National Standards OTJ from the end of Year 4.
 
 Other categorical data included are student gender and ethnicity.
 
