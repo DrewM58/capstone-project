@@ -10,7 +10,7 @@ Targets <- read_csv("targets_tidy.csv")
 
 str(Targets)
 
-# - Introduce factors for Logistic Regression:
+# - Introduce factors
 Targets$At <- factor(Targets$At, levels = c(0, 1))
 Targets$ethnic <- factor(Targets$ethnic, 
                          levels = c('Other', 'NZMaori', 'NZEuro', 'Pasifika', 'Asian'))
