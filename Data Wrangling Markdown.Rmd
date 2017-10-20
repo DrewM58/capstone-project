@@ -1,0 +1,42 @@
+---
+title: "Capstone Data Wrangling"
+author: "Drew Matheson"
+date: "10/17/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**The Data**
+
+All data in this project will come from one school with a roll size of 489 students. There is data for approximately 150 students who have been assessed at both time 1 (end of 1 year at school) and time 2 (end of Year 3). All data will be anonymized.
+
+The data used in this project come from 2 different assessment tools used in New Zealand primary schools.
+
+The first is the JAM assessment tool which is used to assess children in mathematics in the first two years of school (Year 1 and Year 2). The JAM tool assess students in 11 aspects (modules) of mathematical knowledge and strategies. For this analysis we will use the first 9 modules which are the number strategies and number knowledge aspects. We will use the JAM results from the end of one year at school.
+
+The second assessment is an overall teacher judgement (OTJ) of student progress and achievement up to a particular point in time, made using the National Standards. For this analysis we will use the mathematics National Standards OTJ from the end of Year 3.
+
+Other categorical data included are student gender and ethnicity.
+
+
+**The Data Wrangling**
+
+The data came in as 2 csv files exported from the school management system. The way in which the school management system exported the data meant that the data was not tidy and did require some wrangling. 
+
+The first was a file containing the (anonymous) JAM test results of the school of 489 pupils. 
+
+In the original csv file there were 69 columns. Each aspect of the JAM assessment took up 6 columns, one for each year from 2012 to 2017. All students are assessed with this tool twice, once after 1 year at school and again after 2 years at school, therefore most students had values in two columns (two years) for each aspect (e.g. they were assessed in 2012 and then 2013) and there were many empty cells in the data frame. 
+
+Because we were interested in only the assessement results from after one year at school, and we were not interested in the year (date) in which they were assessed, the first part of the data wrangling was to unite the 6 columns for each aspect of the assessment and extract the first instance of a stage being assigned (i.e the first time they were assessed: after 1 year at school). 
+
+The second csv file contained the the OTJ (Overall Teacher Judgement) for all 489 pupils after 3 Years at school. This indicated if a student was judged as achieving 'Well Below', 'Below', 'At', or 'Above the expected National Standard. Again, this data had 6 columns (one for each year from 2012 to 2017) and each observation had a judgement in only one of these 6 columns. We needed to unite these columns and then bind this data frame with the JAM results data frame. Because some of the students had not yet reached this milestone there was missing data.
+
+The next step was to filter the data to only include those students who had reached the 3 Years at school milestone. To do this we filtered the data frame to only include those who were Year 4, 5, or 6. 
+
+Next, we created a binary variable from the OTJ variable so we could use this for our logistic regression models. The goal of the project is to indentify those students who will not be achieving at the National Standard so the values binary values for OTJ were split into: Below or Well Below = 0, and At or Above = 1.
+
+Finally, we used the complete.cases function to ensure that we only kept those observations with data for each variable, and wrote the csv file of a complete and tidy data set.
+
