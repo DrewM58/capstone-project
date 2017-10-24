@@ -1,0 +1,186 @@
+---
+title: "Capstone Milestone Report"
+author: "Drew Matheson"
+date: "10/23/2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE}
+library(dplyr)
+library(ggplot2)
+library(miscset) 
+load(file="JAM_results.RData")
+```
+
+# An Introduction to the Problem
+
+In New Zealand, National Standards are a national benchmark for student progress throughout the primary school years. The standards set clear expectations that students need to meet in reading, writing, and mathematics in the first eight years at school. At the end of each year of schooling teachers use a range of student achievement evidence to judge whether a student is 'At', 'Below', or 'Above' the expected National Standard. 
+ 
+According to Ministry of Education data from 2015, 84.5% of students after one year at school are achieving 'At' or 'Above' the National Standard and this drops to 74.2% of students at the end of Year 3 [(Ministry of Education)] (http://www.educationcounts.govt.nz/statistics/schooling/national-standards/National_Standards).
+
+Is it possible that some of the students who are judged as being 'Below' the expected National Standard after 3 years could have been 'At' if they had been identified after 1 year and had some intervention put in place to support or accelerate their progress?
+
+The purpose of this analysis is to idenitfy key early warning signs for students at risk of not achieving the National Standard at the end of Year 3, and therefore taking action to support their progress and learning so that they may have the best chance of achieving 'At' the National Standard.
+
+## Client
+
+New Zealand school teachers and leaders are the intended client. 
+
+New Zealand school teachers and leaders strive to provide an educational experience that caters for all students and supports them all to achieve educational success. In this case 'educational success' is measured by achieving 'At' or 'Above' the expected National Standard. 
+
+The assessment and achievement data used in this analysis is already being collected by teachers and schools. If we are able to use this data to identify students that are at risk of achieving 'Below' the National Standard then teachers will be able to action additional support and targeted teaching to ensure these students are more likely to attain the expected National Standard. 
+
+# The Data
+
+All data in this project will come from one school with a roll size of 485 students. There is data for approximately 150 students who have been assessed at both time 1 (end of 1 year at school) and time 2 (end of Year 3). All data will be anonymized.
+
+The data used in this project come from 2 different assessment tools used in New Zealand primary schools.
+
+The first is the JAM (Junior Assessment in Mathematics) assessment tool which is used to assess children in mathematics in the first two years of school (Year 1 and Year 2). The JAM tool assess students in 11 aspects (domains) of mathematical knowledge and strategies. For this analysis we will use the first 7 domains which are the number strategies and number knowledge aspects. We will use the JAM results from the end of one year at school.
+
+The second assessment is an overall teacher judgement (OTJ) of student progress and achievement up to a particular point in time, made using the National Standards. For this analysis we will use the mathematics National Standards OTJ from the end of Year 3.
+
+Other categorical data included are student gender and ethnicity.
+
+## Important Fields in the Data
+The 7 domains from the JAM Assessment are key parts of this data set. For each domain a student is maked as being at a certain stage, from Stage 1 (S1) to Stage 5 (S5). 
+
+They domains are as follows:
+* Additive Strategies
+* Numeral Identification 
+* Forwarwd Number Sequence
+* Backwards Number Sequence
+* Fraction Knowledge
+* Place Value Knowledge
+* Basic Facts Recall
+
+The National Standards OTJ which is assigned to each student indicates if they have achieved the expected standard or not. Students are judged as being 'Well Below', 'Below', 'At' or 'Above' the expected National Standard. For this project we will be separating these students into one of two groups: those achieving the standard ('At' and 'Above'), and those who are not achieving the standard ('Below' and 'Well Below').  This is our dependent variable that we hope to predict using the other independent variables. 
+
+## Challenges in the data set
+The main limitation with this data set is the small size. The initial data set which included all students from the school had 485 observations. Due to the fact that to we wanted to create a predictive model that would predict if students would achieve 'At' the standard after 3 years at school, we had to filter the data set to include only those students who had already reached that 3 years at school milestone. Once we did this, and removed any incomplete cases the tidy data set was reduced to 147 observations. 
+This small data set will present some challenges in the machine learning and modelling stage of the project. 
+
+## Approach to solving this problem
+The JAM assessment from the end of 1 year at school marks a student at a stage (from Stage 0 - Stage 5) for each of the 7 modules in the assessment. 
+
+The National Standard judgement from the End of Year 3 will mark a student as either 'Below', 'At', or 'Above'. 
+
+An appropriate regression model will be applied to see how we might predict the National Standard judgement for a student at the End of Year 3 using the JAM assessment results from the end of 1 year at school.
+
+***
+
+# The Data Wrangling
+
+The data came in as 2 csv files exported from the school management system. The way in which the school management system exported the data meant that the data was not tidy and did require some wrangling. 
+
+The first was a file containing the (anonymous) JAM test results of the school of 489 pupils. 
+
+In the original csv file there were 69 columns. Each aspect of the JAM assessment took up 6 columns, one for each year from 2012 to 2017. All students are assessed with this tool twice, once after 1 year at school and again after 2 years at school, therefore most students had values in two columns (two years) for each aspect (e.g. they were assessed in 2012 and then 2013) and there were many empty cells in the data frame. 
+
+Because we were interested in only the assessement results from after one year at school, and we were not interested in the year (date) in which they were assessed, the first part of the data wrangling was to unite the 6 columns for each aspect of the assessment and extract the first instance of a stage being assigned (i.e the first time they were assessed: after 1 year at school). 
+
+The second csv file contained the the OTJ (Overall Teacher Judgement) for all 489 pupils after 3 Years at school. This indicated if a student was judged as achieving 'Well Below', 'Below', 'At', or 'Above the expected National Standard. Again, this data had 6 columns (one for each year from 2012 to 2017) and each observation had a judgement in only one of these 6 columns. We needed to unite these columns and then bind this data frame with the JAM results data frame. Because some of the students had not yet reached this milestone there was missing data.
+
+The next step was to filter the data to only include those students who had reached the 3 Years at school milestone. To do this we filtered the data frame to only include those who were Year 4, 5, or 6. 
+Next, we created a binary variable from the OTJ variable so we could use this for our logistic regression models. The goal of the project is to indentify those students who will not be achieving at the National Standard so the values binary values for OTJ were split into: Below or Well Below = 0, and At or Above = 1.
+
+Finally, we used the complete.cases function to ensure that we only kept those observations with data for each variable, and wrote the csv file of a complete and tidy data set.
+
+***
+# Statistical Analysis and Exploratory Data Analysis
+
+##Percentage of students achieving 'At'
+
+The first step was to identify the percentage of students in the dataset who were achieving 'At' or 'Above' the standard. 
+28 students (19%) were achieving 'Below' or 'Well Below', 119 students (81%) were achieving 'At' or 'Above'.
+
+##Investigating achievement within ethnic groups
+
+I grouped the data by the 'ethnic' variable and then took the mean of the 'At' variable, as this is a binary variable this gave the percentage of each ethnic group that was achieving the standard. 
+This showed that NZMaori and Pasifika students were more likely to achieve below the standard. 33% of NZMaori students were below the standard, as were 50% of Pasifika students. This was in contrast to NZEuro students of which 17% were achieving below. This suggests that NZMaori and Pasifika students are much more likely to achieve below the standard.
+I plotted this as follows:
+
+
+```{r echo=FALSE}
+ggplot(JAM_results, aes(x = ethnic)) +
+  geom_bar(aes(fill = factor(At)), position = "fill") +
+  labs(title = "Achievement by Ethnicity", x = "Ethnicity", y = "Percentage", fill = "At Standard") +
+  scale_fill_manual(labels = c("Below", "At"), values = c("red3", "blue3"))
+```
+
+##Investigating achievement within gender groups
+Data was grouped by the 'gender' variable and then the mean of the 'At' variable was calculated, as this is a binary variable this gave the percentage of each ethnic group that was achieving the standard. 
+This showed that 21% of female students and 16% of male students were achieving below the standard. Female students are slightly to achieve below the standard.
+I plotted this as follows:
+
+
+```{r echo=FALSE}
+ggplot(JAM_results, aes(x = gender)) +
+  geom_bar(aes(fill = factor(At)), position = "fill") +
+  labs(title = "Achievement by Gender", x = "Gender", y = "Percentage", fill = "At Standard") +
+  scale_fill_manual(labels = c("Below", "At"), values = c("red3", "blue3")) 
+```
+
+##Investigating achievement of students within each JAM assessment domain. 
+Data was grouped by each of the 7 JAM assessment domain variables and then the mean of the 'At' variable was calculated. This gave the percentage of students at each stage within each domain that was achieving the standard. 
+###Findings
+As expected, with nearly every domain from the JAM assessment, the higher stage that a student is assessed as being at the more likely it is that they will be achieving 'At' the standard. The one exception is the 'fractions' domain, there was not a clear trend in this domain. 
+###Bar Plots
+To visualise this I plotted each domain in a combined plot. Each individual bar plot showing the percentage of students at each stage of that domain who are judged 'At' or 'Below' the standard. 
+
+
+```{r echo=FALSE}
+ggplotGrid(ncol = 2,
+           lapply(c("additive", "numberID", "forwardSequence", "backwardSequence", "fractions", 
+                    "placeValue", "basicFacts"),
+                  function(col) {
+                    ggplot(JAM_results, aes_string(col)) + 
+                      geom_bar(aes(fill = factor(At)), position = "fill") +
+                      labs(y = "Percentage") +
+                      coord_flip()
+                  }))
+```
+
+
+### Interpreting the plot
+The plots show visually that the higher the stage the more likely that a student will be 'At' the standard. The 'numberID', 'placeValue', 'forwardSequence', and 'basicFacts' domains have the largest proportion of students who were at stage 1 (S1) and then judged as 'Below' the standard. Over half of the students who were Stage 1 in these domains did not reach the standard.
+
+### Scatter Plots
+I used facet grid scatter plots to visualise three variables and colored the points to show which obsevations achieved 'At' or 'Below' standard. 
+
+
+```{r echo=FALSE}
+# - Additive and NumberID domains in facet grid by Place Value 
+ggplot(JAM_results, aes(additive, numberID, col = factor(At))) +
+  geom_point(position = "jitter") +
+  labs(title = "Additive and Number ID", col = "At Standard?") +
+  facet_grid(.~placeValue)
+
+# - Forward Sequence and Number ID in facet grid by Place Value 
+ggplot(JAM_results, aes(forwardSequence, numberID, col = factor(At))) +
+  geom_point(position = "jitter") +
+  labs(title = "Forward Sequence and Number ID by Place Value", col = "At Standard?") +
+  facet_grid(.~placeValue)
+
+# - Basic Facts and Number ID in facet grid by Place Value 
+ggplot(JAM_results, aes(basicFacts, numberID, col = factor(At))) +
+  geom_point(position = "jitter") +
+  labs(title = "Basic Facts and Number ID by Place Value", col = "At Standard?") +
+  facet_grid(.~placeValue)
+```
+
+
+### Interpreting Scatter Plots
+As expected the plots clearly show that the higher the stage in each domain the more likely that a student will achieve 'At' the standard. There is not a clear indication of which variables have the greatest impact on the outcome at this stage. 
+
+***
+
+# Next Steps
+The next step in the project is to create a binary logistic regression model that will predict whether a student will achieve 'At' the standard after 3 Years at school. 
+
