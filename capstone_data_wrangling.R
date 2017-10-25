@@ -1,21 +1,19 @@
+# - Load required packages
 library(tidyr)
 library(dplyr)
 library(readr)
 library(stringr)
 
-
-## Load JAM Results .csv
+# - Load JAM Results .csv
 JAM_results <- read_csv("JAM_results.csv")
 
-## Assign ID number to observations
+# - Assign ID number to observations
 JAM_results <- mutate(JAM_results, id = rownames(JAM_results))
 
-## Move ID number to 1st column
-
+# - Move ID number to 1st column
 JAM_results <- JAM_results[, c(70, 1:69)]
 
-## Unite columns for each domain of assessment extract first instance of stage being assigned
-
+# - Unite columns for each domain of assessment extract first instance of stage being assigned
 JAM_results <- JAM_results %>% unite(additive, 5:10, sep = "_", remove = TRUE)
 JAM_results <- mutate(JAM_results, additive = str_extract(additive, "S[0-9]" ))
 
@@ -43,50 +41,48 @@ JAM_results <- mutate(JAM_results, overall = str_extract(overall, "S[0-9]" ))
 JAM_results <- JAM_results %>% unite(multiplicative, 13:19, sep = "_", remove = TRUE)
 JAM_results <- mutate(JAM_results, multiplicative = str_extract(multiplicative, "S[0-9]" ))
 
+# - Replace all S0 with S1. In the assessment this is marked as S0-1.
+JAM_results$additive <- gsub("S0", "S1", JAM_results$additive)
+JAM_results$numberID <- gsub("S0", "S1", JAM_results$numberID)
+JAM_results$forwardSequence <- gsub("S0", "S1", JAM_results$forwardSequence)
+JAM_results$backwardSequence <- gsub("S0", "S1", JAM_results$backwardSequence)
+JAM_results$fractions <- gsub("S0", "S1", JAM_results$fractions)
+JAM_results$placeValue <- gsub("S0", "S1", JAM_results$placeValue)
+JAM_results$basicFacts <- gsub("S0", "S1", JAM_results$basicFacts)
 
-
-## Remove columns that are not required
-
+# - Remove columns that are not required
 JAM_results[c(14:25)] <- list(NULL)
 
-## Rename columns for consistency
-
+# - Rename columns for consistency
 colnames(JAM_results) [2:4] <- c("year", "ethnic", "gender")
 
-## Change "year" variable to single digit
-
+# - Change "year" variable to single digit
 JAM_results$year <- gsub(".Y(\\d).", "\\1", JAM_results$year)
 
-## Tidy gender column
-
+# - Tidy gender column
 JAM_results$gender <- gsub("'Male'", "Male", JAM_results$gender)
 JAM_results$gender <- gsub("'Female'", "Female", JAM_results$gender)
 
-
-## Load OTJ Results .csv
+# - Load OTJ Results .csv data
 OTJS <- read_csv("OTJ.csv")
 
-## Remove columns not required
+# - Remove columns not required
 OTJS[c(1:8)] <- list(NULL)
 
-## Unite columns from each year, so all judgements are in 1 column
-
+# - Unite columns from each year, so all judgements are in 1 column
 OTJS <- OTJS %>% unite(OTJ, 1:4, sep = "_", remove = TRUE)
 OTJS <- mutate(OTJS, OTJ = str_extract(OTJ, "[[:alpha:]].*[[:alpha:]]" ))
 
-## Bind OTJS to JAM_results
-
+# - Bind OTJS to JAM_results
 JAM_results <- bind_cols(JAM_results, OTJS)
 
-## Filter only Year 4-6 Students
-
+# - Filter only Year 4-6 Students
 JAM_results <- JAM_results %>% filter(as.numeric(year) >= 4)
 
-## Remove observations with no JAM results
+# - Remove observations with no JAM results
 JAM_results <- JAM_results %>% filter(!is.na(additive))
 
-
-## Change variables to factors
+# - Change variables to factors
 JAM_results$gender <- as.factor(JAM_results$gender)
 JAM_results$year <- as.factor(JAM_results$year)
 JAM_results$additive <- as.factor(JAM_results$additive)
@@ -98,15 +94,13 @@ JAM_results$placeValue <- as.factor(JAM_results$placeValue)
 JAM_results$basicFacts <- as.factor(JAM_results$basicFacts)
 JAM_results$multiplicative <- as.factor(JAM_results$multiplicative)
 
-## Remove Overall column as this will not be required
-
+# - Remove Overall column as this will not be required
 JAM_results$overall <- NULL
 
-## Remove Multiplicative column as there are too many NA 
-
+# - Remove Multiplicative column as there are too many NA 
 JAM_results$multiplicative <- NULL
 
-## Tidy-up ethnic column to be factor with levels "NZEuro" "NZMaori" "Pasific" "Asian" "Other"
+# - Tidy-up ethnic column to be factor with levels "NZEuro" "NZMaori" "Pasific" "Asian" "Other"
 table(JAM_results$ethnic)
 
 JAM_results$ethnic <- gsub(".NZ European.", "NZEuro", JAM_results$ethnic)
@@ -117,22 +111,18 @@ JAM_results$ethnic <- gsub(".Australian.|.Other European.|.British / Irish.|.Ger
 
 JAM_results$ethnic <- as.factor(JAM_results$ethnic)
 
-## Make OTJ factor
+# - Make OTJ factor
 JAM_results$OTJ <- as.factor(JAM_results$OTJ)
 
-## Order factor levels
+# - Order factor levels
 JAM_results$OTJ <- factor(JAM_results$OTJ, levels = c("Well Below Standard", "Below Standard", "At Standard", "Above Standard"))
 
-## Create binary values for OTJ (Below or Well Below = 1, At or Above = 0)
+# - Create binary values for OTJ (Below or Well Below = 0, At or Above = 1)
+JAM_results <- JAM_results %>% mutate(At = ifelse(OTJ == "Below Standard" | OTJ == "Well Below Standard", 0, 1))
+JAM_results$At <- as.numeric(JAM_results$At)
 
-JAM_results <- JAM_results %>% mutate(Below = ifelse(OTJ == "Below Standard" | OTJ == "Well Below Standard", 1, 0))
-JAM_results$Below <- as.factor(JAM_results$Below)
-
-## Only keep complete cases
-
+# - Only keep complete cases
 Targets <- JAM_results[complete.cases(JAM_results), ]
-Targets$Below <- as.factor(Targets$Below)
 
-## Write csv file of tidy data
-
+# - Write csv file of tidy data 
 write_csv(Targets, "targets_tidy.csv")

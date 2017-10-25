@@ -5,6 +5,7 @@ library(caTools)
 library(rpart)
 library(rpart.plot)
 library(data.table)
+library(ggplot2)
 
 # - Load csv file
 Targets <- read_csv("targets_tidy.csv")
@@ -36,7 +37,6 @@ CartFrame <- select(Targets, At, ethnic, gender, additive, numberID, forwardSequ
 samples <- listfunction(x) {
   list(sample(1:147, 100, replace = FALSE))
 }
-
 
 # - Use lapply with 'samples' function to create list with 100 items, each with 100 
 # - random numbers between 1:147 to create training and test splits for Monte Carlo CV.
@@ -76,20 +76,48 @@ cvfunctionresults <- lapply(cvfunctionresults, unlist)
 
 # - Create tbl_df from results
 CVresultsDF <- tbl_df(t(sapply(cvfunctionresults,c)))
-View(CVresultsDF)
+
+# - Change column names to minbucket size
+colnames(CVresultsDF) <- c("2", "3", "4", "5", "6", "7", "8", "9", "10", 
+                           "11", "12", "13", "14", "15", "16", "17", "18", 
+                           "19", "20")
 
 # - Find mean of model accuracy for each minbucket size.
-minbucketMean <- summarise_all(CVresultsDF, funs(mean))
+minbucketMean <- t(summarise_all(CVresultsDF, funs(mean)))
+minbucketMean <- tbl_df(minbucketMean)
+minbucketMean$bucketsize <- 2:20
+colnames(minbucketMean) <- c("mean_model_accuracy", "bucket_size")
 
+# - Plot minbucketMean
+ggplot(minbucketMean, aes(bucket_size, mean_model_accuracy)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Mean CART Model Accuracy with Range of bucketsize ", 
+       x = "Bucket Size", y = "Mean Model Accuracy") +
+  coord_cartesian(ylim = c(0.75, 0.85)) 
 
+# Models with minbucket of size 20 have the largest mean model accuracy. 
 
-# - I tried to use the Snowfall function but got errors that I couldn't resolve. 
+# - Run CART model with minbucket size of 20.  
+CARTmodel <- rpart(At ~ ., 
+              data = CartFrame, 
+              method = "class", 
+              control = rpart.control(minbucket = 20))
 
-#- Load and initialize snowfall package
-library(snowfall)
-sfInit(parallel = TRUE, cpus = 2, type = "SOCK")
-sfClusterApplyLB(seq_along(splits), cvfunction)
+# - Plot tree using prp function 
+prp(CARTmodel)
 
-sfLapply(seq_along(splits), cvfunction)
+# - See how well model works on test set
+PredictCART <- predict(CARTmodel, newdata = Targets, type = "class")
 
+# - Create confusion matrix 
+table(Targets$At, PredictCART)
+
+# - Calculate accuracy of model 
+(16+105)/(16+105+12+14)
+
+#- Model accuracy is 82%. A very small improvement on the baseline. 
+
+# - Saving objects for markdown
+
+save(CARTmodel, minbucketMean, file = "cartmodel.RData")
 
